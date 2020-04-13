@@ -1,5 +1,4 @@
 import logging
-import time
 import sqlite3
 import pandas as pd
 import shutil
