@@ -25,6 +25,7 @@ def send_email(content, subject, mail_from, mail_to):
     s.login(username, pwd)  
     s.send_message(msg)
     time.sleep(5)
+    s.close()
     s.quit()
     logging.info("Email was correctly executed")
 
