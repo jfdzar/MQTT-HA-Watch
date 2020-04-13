@@ -9,17 +9,17 @@ import HAEmail
 import HADetectPerson
 import HADatabase
 
-def on_connect(mqttc, obj, flags, rc):
+def on_connect(_mqttc, _obj, _flags, rc):
     logging.info("Connection to broker RC: %s", str(rc))
 
-def on_publish(mqttc, obj, mid):
+def on_publish(_mqttc, _obj, mid):
     logging.info("mid: %s",str(mid))
 
-def on_subscribe(mqttc, obj, mid, granted_qos):
+def on_subscribe(_mqttc, _obj, mid, granted_qos):
     logging.info("Subscribing to topic")
     logging.info("Subscribed: %s %s",str(mid),str(granted_qos))
 
-def on_log(mqttc, obj, level, string):
+def on_log(_mqttc, _obj, _level, string):
     logging.info('%s',string)
 
 def on_message(mqttc, _obj, msg):
