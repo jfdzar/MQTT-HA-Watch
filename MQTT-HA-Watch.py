@@ -22,7 +22,7 @@ def on_subscribe(mqttc, obj, mid, granted_qos):
 def on_log(mqttc, obj, level, string):
     logging.info('%s',string)
 
-def on_message(mqttc, obj, msg):
+def on_message(mqttc, _obj, msg):
     logging.info("%s: %s",str(msg.topic),str(msg.payload.decode('utf-8')))
     
     ####
