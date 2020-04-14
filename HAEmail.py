@@ -15,8 +15,8 @@ def send_email(content, subject, mail_from, mail_to):
     # Send the message via our own SMTP server.
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls() 
-    with open('include/credentials.json', 'r') as f:
-        credentials = json.load(f)
+    with open('include/credentials.json', 'r') as file:
+        credentials = json.load(file)
     pwd = credentials[0]['pass']
     username = credentials[0]['username']
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
     
-    content = 'Test E-Mail from Module'
-    subject = 'E-Mail Module Test'
-    mail_from = 'Module Test'
-    send_email(content,subject, mail_from, credentials[1]['email'])
+    msg_content = 'Test E-Mail from Module'
+    msg_subject = 'E-Mail Module Test'
+    msg_from = 'Module Test'
+    send_email(msg_content,msg_subject, msg_from, credentials[1]['email'])
