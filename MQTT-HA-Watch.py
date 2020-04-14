@@ -59,7 +59,7 @@ def send_statistics():
         alive_email_thread = threading.Thread(target=HAEmail.send_email, args=(alive_msg,alive_subject,alive_from,alive_to,))
         alive_email_thread.start()
         
-    except Exception as e: # skipcq: PYL-W0703
+    except Exception as e:  # skipcq: PYL-W0703
         logging.error(e)
 
 
@@ -85,23 +85,23 @@ if __name__ == '__main__':
     password = credentials[0]["password"]
 
     mqtt_client = mqtt.Client()
-    mqtt_client.username_pw_set(user, password=password)    #set username and password
+    mqtt_client.username_pw_set(user, password=password)  # set username and password
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
     mqtt_client.on_publish = on_publish
     mqtt_client.on_subscribe = on_subscribe
-    #mqttc.on_log = on_log # Un/comment to enable debug messages
+    # mqttc.on_log = on_log # Un/comment to enable debug messages
     mqtt_client.connect(broker_address, port=port)
 
-    mqtt_client.loop_start() #start the loop
+    mqtt_client.loop_start()  # start the loop
     logging.info("Subscribing to desired topics")
     mqtt_client.subscribe(credentials[0]["all_topics"])
 
     while(1):
-        time.sleep(43200) # wait
+        time.sleep(43200)  # wait
         logging.info("MQTT-HA Watch is alive") 
 
     logging.info("Exiting Loop") 
-    mqtt_client.loop_stop() #stop the loop
+    mqtt_client.loop_stop()  # stop the loop
     # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()

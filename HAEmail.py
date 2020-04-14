@@ -1,4 +1,3 @@
-# Import smtplib and email modules
 import smtplib
 from email.message import EmailMessage
 import time
@@ -31,7 +30,7 @@ def send_email(content, subject, mail_from, mail_to):
 
 
 if __name__ == '__main__':
-    
+
     logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO,
                         datefmt='%H:%M:%S')
     

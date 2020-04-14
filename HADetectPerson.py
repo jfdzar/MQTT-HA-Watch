@@ -17,7 +17,7 @@ def detect_person(mqttc):
         elif res == 2: 
             logging.info("no response from %s", address) 
         else: 
-            #print("ping to", address, "failed!")
+            # print("ping to", address, "failed!")
             logging.info("Ping to %s is FAILED: %s is Away!", address,item['person_name'])
             mqttc.publish(topic=item['person_topic'],payload="Away")
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     password = credentials[0]["password"]
 
     mqtt_client = mqtt.Client()
-    mqtt_client.username_pw_set(user, password=password)    #set username and password
+    mqtt_client.username_pw_set(user, password=password)  # set username and password
     mqtt_client.connect(broker_address, port=port)
 
     detect_person(mqtt_client)
