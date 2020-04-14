@@ -5,8 +5,8 @@ import json
 
 def detect_person(mqttc):
 
-    with open('include/person.json', 'r') as f:
-        person = json.load(f)
+    with open('include/person.json', 'r') as file:
+        person = json.load(file)
 
     for item in person:
         address = item['address']
@@ -34,11 +34,11 @@ if __name__ == '__main__':
     user = credentials[0]["user"]
     password = credentials[0]["password"]
 
-    mqttc = mqtt.Client()
-    mqttc.username_pw_set(user, password=password)    #set username and password
-    mqttc.connect(broker_address, port=port)
+    mqtt_client = mqtt.Client()
+    mqtt_client.username_pw_set(user, password=password)    #set username and password
+    mqtt_client.connect(broker_address, port=port)
 
-    detect_person(mqttc)
+    detect_person(mqtt_client)
 
     # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()
