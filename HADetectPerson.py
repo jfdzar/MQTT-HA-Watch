@@ -40,4 +40,5 @@ if __name__ == '__main__':
 
     detect_person(mqttc)
 
+    # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()

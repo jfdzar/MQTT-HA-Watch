@@ -27,18 +27,18 @@ class HADatabase:
                         self.save_to_csv_db()
                         logging.info('Deleting DB File on working dir')
                         os.remove(self.db_working_dir)
-                    except Exception as e:
+                    except Exception as e: # skipcq: PYL-W0703
                         logging.error(e)
-                except Exception as e:
+                except Exception as e: # skipcq: PYL-W0703
                     logging.info('Saving Data into Dataframe failed')
                     logging.error(e)
                     self.df_db = 0   
 
-            except Exception as e:
+            except Exception as e: # skipcq: PYL-W0703
                 logging.info('Connecting Failed!')
                 logging.error('%s %s',e,self.path)
                 self.con = 0 
-        except Exception as e:
+        except Exception as e: # skipcq: PYL-W0703
             logging.error('Error Copying DB to Working Dir')
             logging.error('%s %s',e,self.path)
 
@@ -46,7 +46,7 @@ class HADatabase:
         self.db_working_dir = 'data/home-assistant.db'
         try:
             shutil.copyfile(self.path,self.db_working_dir)
-        except Exception as e:
+        except Exception as e: # skipcq: PYL-W0703
             logging.error(e)
 
     def save_to_csv_db(self):
@@ -69,7 +69,7 @@ class HADatabase:
             self.battery_min = x.min()
             self.battery_mean = x.mean()
             self.battery_max = x.max()
-        except Exception as e:
+        except Exception as e: # skipcq: PYL-W0703
             logging.error(e)
             self.battery_min = 0
             self.battery_mean = 0

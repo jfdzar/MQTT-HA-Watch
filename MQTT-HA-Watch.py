@@ -59,12 +59,12 @@ def send_statistics():
         alive_email_thread = threading.Thread(target=HAEmail.send_email, args=(alive_msg,alive_subject,alive_from,alive_to,))
         alive_email_thread.start()
         
-    except Exception as e:
+    except Exception as e: # skipcq: PYL-W0703
         logging.error(e)
 
 
 if __name__ == '__main__':
-    
+
     logging.basicConfig(format="%(asctime)s: %(message)s", level=logging.INFO,
                         datefmt="%H:%M:%S")
 
@@ -103,4 +103,5 @@ if __name__ == '__main__':
 
     logging.info("Exiting Loop") 
     mqtt_client.loop_stop() #stop the loop
+    # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()
