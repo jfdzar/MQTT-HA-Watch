@@ -85,23 +85,23 @@ if __name__ == '__main__':
     user = credentials[0]["user"]
     password = credentials[0]["password"]
 
-    mqttc = mqtt.Client()
-    mqttc.username_pw_set(user, password=password)    #set username and password
-    mqttc.on_message = on_message
-    mqttc.on_connect = on_connect
-    mqttc.on_publish = on_publish
-    mqttc.on_subscribe = on_subscribe
+    mqtt_client = mqtt.Client()
+    mqtt_client.username_pw_set(user, password=password)    #set username and password
+    mqtt_client.on_message = on_message
+    mqtt_client.on_connect = on_connect
+    mqtt_client.on_publish = on_publish
+    mqtt_client.on_subscribe = on_subscribe
     #mqttc.on_log = on_log # Un/comment to enable debug messages
-    mqttc.connect(broker_address, port=port)
+    mqtt_client.connect(broker_address, port=port)
 
-    mqttc.loop_start() #start the loop
+    mqtt_client.loop_start() #start the loop
     logging.info("Subscribing to desired topics")
-    mqttc.subscribe(credentials[0]["all_topics"])
+    mqtt_client.subscribe(credentials[0]["all_topics"])
 
     while(1):
         time.sleep(43200) # wait
         logging.info("MQTT-HA Watch is alive") 
 
     logging.info("Exiting Loop") 
-    mqttc.loop_stop() #stop the loop
+    mqtt_client.loop_stop() #stop the loop
     exit()
