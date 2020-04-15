@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-import subprocess
 import time
 import threading
 import logging
@@ -10,20 +9,20 @@ import HAEmail
 import HADetectPerson
 import HADatabase
 
-def on_connect(mqttc, obj, flags, rc):
+def on_connect(_mqttc, _obj, _flags, rc):
     logging.info("Connection to broker RC: %s", str(rc))
 
-def on_publish(mqttc, obj, mid):
+def on_publish(_mqttc, _obj, mid):
     logging.info("mid: %s",str(mid))
 
-def on_subscribe(mqttc, obj, mid, granted_qos):
+def on_subscribe(_mqttc, _obj, mid, granted_qos):
     logging.info("Subscribing to topic")
     logging.info("Subscribed: %s %s",str(mid),str(granted_qos))
 
-def on_log(mqttc, obj, level, string):
+def on_log(_mqttc, _obj, _level, string):
     logging.info('%s',string)
 
-def on_message(mqttc, obj, msg):
+def on_message(mqttc, _obj, msg):
     logging.info("%s: %s",str(msg.topic),str(msg.payload.decode('utf-8')))
     
     ####
@@ -60,14 +59,13 @@ def send_statistics():
         alive_email_thread = threading.Thread(target=HAEmail.send_email, args=(alive_msg,alive_subject,alive_from,alive_to,))
         alive_email_thread.start()
         
-    except Exception as e:
+    except Exception as e:  # skipcq: PYL-W0703
         logging.error(e)
 
 
 if __name__ == '__main__':
 
-    format = "%(asctime)s: %(message)s"
-    logging.basicConfig(format=format, level=logging.INFO,
+    logging.basicConfig(format="%(asctime)s: %(message)s", level=logging.INFO,
                         datefmt="%H:%M:%S")
 
     with open('include/credentials.json', 'r') as f:
@@ -86,23 +84,24 @@ if __name__ == '__main__':
     user = credentials[0]["user"]
     password = credentials[0]["password"]
 
-    mqttc = mqtt.Client()
-    mqttc.username_pw_set(user, password=password)    #set username and password
-    mqttc.on_message = on_message
-    mqttc.on_connect = on_connect
-    mqttc.on_publish = on_publish
-    mqttc.on_subscribe = on_subscribe
-    #mqttc.on_log = on_log # Un/comment to enable debug messages
-    mqttc.connect(broker_address, port=port)
+    mqtt_client = mqtt.Client()
+    mqtt_client.username_pw_set(user, password=password)  # set username and password
+    mqtt_client.on_message = on_message
+    mqtt_client.on_connect = on_connect
+    mqtt_client.on_publish = on_publish
+    mqtt_client.on_subscribe = on_subscribe
+    # mqttc.on_log = on_log # Un/comment to enable debug messages
+    mqtt_client.connect(broker_address, port=port)
 
-    mqttc.loop_start() #start the loop
+    mqtt_client.loop_start()  # start the loop
     logging.info("Subscribing to desired topics")
-    mqttc.subscribe(credentials[0]["all_topics"])
+    mqtt_client.subscribe(credentials[0]["all_topics"])
 
     while(1):
-        time.sleep(43200) # wait
+        time.sleep(43200)  # wait
         logging.info("MQTT-HA Watch is alive") 
 
     logging.info("Exiting Loop") 
-    mqttc.loop_stop() #stop the loop
+    mqtt_client.loop_stop()  # stop the loop
+    # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()
