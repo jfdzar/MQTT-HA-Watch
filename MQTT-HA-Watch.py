@@ -82,7 +82,6 @@ if __name__ == '__main__':
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
 
-
     # Read Database 
     path=credentials[0]["db_path"]
     if os.path.isfile(path):
