@@ -4,7 +4,9 @@ import time
 import logging
 import json
 
-def send_email(content, subject, mail_from, mail_to):   
+def send_email(content, subject, mail_from, mail_to):
+    """ Send Email with the function parameters """
+       
     logging.info("Sending Message")
     msg = EmailMessage()
     msg.set_content(content)
