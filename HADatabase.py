@@ -20,8 +20,10 @@ class HADatabase:
         self.email_txt = ''
         self.csv_working_dir = ''
 
-        if (path != ''): self.path = path
-        else: self.path = ''
+        if (path != ''):
+            self.path = path
+        else:
+            self.path = ''
 
     def read_database(self):
         """ Read Database File in Path """
@@ -95,3 +97,4 @@ class HADatabase:
             self.battery_min = 0
             self.battery_mean = 0
             self.battery_max = 0
+            
