@@ -8,6 +8,16 @@ import os
 class HADatabase:
     def __init__(self,path=''):
         logging.info('Creating HADatabase - Just Assigning Path')
+
+        self.con = 0
+        self.battery_min = 0
+        self.battery_mean = 0
+        self.battery_max = 0
+        self.df_csv = pd.DataFrame()
+        self.df_db = pd.DataFrame()
+        self.email_txt = ''
+        self.csv_working_dir = ''
+
         if (path != ''): self.path = path
         else: self.path = ''
 
