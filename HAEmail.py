@@ -41,3 +41,4 @@ if __name__ == '__main__':
     msg_subject = 'E-Mail Module Test'
     msg_from = 'Module Test'
     send_email(msg_content, msg_subject, msg_from, mail_credentials[1]['email'])
+    
