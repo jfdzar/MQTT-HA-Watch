@@ -7,6 +7,8 @@ import os
 
 class HADatabase:
     def __init__(self,path=''):
+        """ Init HA Database Object"""
+
         logging.info('Creating HADatabase - Just Assigning Path')
 
         self.con = 0
@@ -18,10 +20,14 @@ class HADatabase:
         self.email_txt = ''
         self.csv_working_dir = ''
 
-        if (path != ''): self.path = path
-        else: self.path = ''
+        if (path != ''):
+            self.path = path
+        else:
+            self.path = ''
 
-    def read_database(self):  
+    def read_database(self):
+        """ Read Database File in Path """
+
         try:  # First copy the database file to the working directory
             logging.info('Reading Database -  Copying DB to Working Dir')
             self.copy_db_to_working_dir()
@@ -53,6 +59,8 @@ class HADatabase:
             logging.error('%s %s',e,self.path)
 
     def copy_db_to_working_dir(self):
+        """ Copy DB File to Working dir """
+
         self.db_working_dir = 'data/home-assistant.db'
         try:
             shutil.copyfile(self.path,self.db_working_dir)
@@ -60,12 +68,16 @@ class HADatabase:
             logging.error(e)
 
     def save_to_csv_db(self):
+        """ Save File to CSV """
+
         self.csv_working_dir = 'data/home-assistant.csv'
         self.df_db.to_csv(self.csv_working_dir)
         # TO DO read previous CSV and append new information
         # TO DO Clean Database
 
     def prepare_email(self):
+        """ Prepare E-Mail to be sent """
+
         self.email_txt = 'Hola'
 
         self.df_csv = pd.read_csv(self.csv_working_dir)
@@ -74,6 +86,7 @@ class HADatabase:
         self.email_txt = self.email_txt + str(self.battery_min)
 
     def calculate_battery_values(self):
+        """ Temp function which calculates some values to be sent """
         try:
             x = self.df_csv[(self.df_csv['entity_id'] =='sensor.battery_status_garden')].replace('unknown',method='bfill')['state'].astype(float)
             self.battery_min = x.min()
@@ -84,3 +97,4 @@ class HADatabase:
             self.battery_min = 0
             self.battery_mean = 0
             self.battery_max = 0
+            

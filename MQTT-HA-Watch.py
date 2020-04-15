@@ -10,19 +10,28 @@ import HADetectPerson
 import HADatabase
 
 def on_connect(_mqttc, _obj, _flags, rc):
+    """ Declaration of Function when MQTT Client Connects """
     logging.info("Connection to broker RC: %s", str(rc))
 
 def on_publish(_mqttc, _obj, mid):
+    """ Declaration of Function when MQTT Client Publish a Msg """
+
     logging.info("mid: %s",str(mid))
 
 def on_subscribe(_mqttc, _obj, mid, granted_qos):
+    """ Declaration of Function when MQTT Client Subscribes a Topic """
+
     logging.info("Subscribing to topic")
     logging.info("Subscribed: %s %s",str(mid),str(granted_qos))
 
 def on_log(_mqttc, _obj, _level, string):
+    """ Declaration of Function when MQTT Client Logs """
+    
     logging.info('%s',string)
 
 def on_message(mqttc, _obj, msg):
+    """ Declaration of Function when MQTT Client Gets a Msg """
+
     logging.info("%s: %s",str(msg.topic),str(msg.payload.decode('utf-8')))
     
     ####
@@ -43,6 +52,8 @@ def on_message(mqttc, _obj, msg):
                 alive_email_thread.start()
                 
 def send_statistics():
+    """ Temp Function to send HA Statistics """
+
     logging.info("Sending Statistics")
     try:
         read_db_thread = threading.Thread(target=ha_db.read_database, args=())
@@ -70,7 +81,6 @@ if __name__ == '__main__':
 
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
-
 
     # Read Database 
     path=credentials[0]["db_path"]

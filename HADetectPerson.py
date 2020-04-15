@@ -4,6 +4,7 @@ import logging
 import json
 
 def detect_person(mqttc):
+    """ Detects a Person checking for IP Address on Local Network """
 
     with open('include/person.json', 'r') as file:
         person = json.load(file)
