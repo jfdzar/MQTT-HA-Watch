@@ -12,7 +12,12 @@ def detect_person(mqttc):
 
     for item in person:
         address = item['address']
-        res = subprocess.call(['ping', '-c', '3', address])  # skipcq: BAN-B603 BAN-B607
+        res = subprocess.call([  # skipcq: BAN-B603, BAN-B607
+            'ping',
+            '-c',
+            '3',
+            address
+        ])
         if res == 0:
             logging.info("Ping to %s is OK: %s is at Home!", address,
                          item['person_name'])
