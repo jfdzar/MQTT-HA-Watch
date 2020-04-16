@@ -88,7 +88,8 @@ class HADatabase:
     def calculate_battery_values(self):
         """ Temp function which calculates some values to be sent """
         try:
-            x = self.df_csv[(self.df_csv['entity_id'] =='sensor.battery_status_garden')].replace('unknown',method='bfill')['state'].astype(float)
+            x = self.df_csv[(self.df_csv['entity_id'] =='sensor.battery_status_garden')]
+            x = x.replace('unknown',method='bfill')['state'].astype(float)
             self.battery_min = x.min()
             self.battery_mean = x.mean()
             self.battery_max = x.max()
@@ -97,4 +98,3 @@ class HADatabase:
             self.battery_min = 0
             self.battery_mean = 0
             self.battery_max = 0
-            

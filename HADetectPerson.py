@@ -13,13 +13,15 @@ def detect_person(mqttc):
         address = item['address']
         res = subprocess.call(['ping', '-c', '3', address])  # skipcq: BAN-B603 BAN-B607
         if res == 0: 
-            logging.info("Ping to %s is OK: %s is at Home!", address,item['person_name'])
+            logging.info("Ping to %s is OK: %s is at Home!",
+                        address,item['person_name'])
             mqttc.publish(topic=item['person_topic'],payload="Home")
         elif res == 2: 
             logging.info("no response from %s", address) 
         else: 
             # print("ping to", address, "failed!")
-            logging.info("Ping to %s is FAILED: %s is Away!", address,item['person_name'])
+            logging.info("Ping to %s is FAILED: %s is Away!",
+                        address,item['person_name'])
             mqttc.publish(topic=item['person_topic'],payload="Away")
 
 if __name__ == '__main__':

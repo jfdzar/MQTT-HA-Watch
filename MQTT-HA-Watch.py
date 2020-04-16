@@ -43,13 +43,14 @@ def on_message(mqttc, _obj, msg):
             logging.info("Door Status Changed")
             if msg.payload.decode('utf-8') == "Opened":
                 logging.info("HA-Person-Detection-Started")
-                detect_person_thread = threading.Thread(target=HADetectPerson.detect_person, args=(mqttc,))
-                detect_person_thread.start()
+                detect_person_t = threading.Thread(target=HADetectPerson.detect_person,
+                                                    args=(mqttc,))
+                detect_person_t.start()
         if topic_array[2] == "ha":
             if msg.payload.decode('utf-8') == "Alive":
                 logging.info("Home Assistant is alive")
-                alive_email_thread = threading.Thread(target=send_statistics, args=())
-                alive_email_thread.start()
+                alive_email_t = threading.Thread(target=send_statistics, args=())
+                alive_email_t.start()
                 
 def send_statistics():
     """ Temp Function to send HA Statistics """
