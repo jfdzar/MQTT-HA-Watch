@@ -125,7 +125,7 @@ if __name__ == '__main__':
     logging.info("Subscribing to desired topics")
     mqtt_client.subscribe(credentials[0]["all_topics"])
 
-    while (1):
+    while 1:
         time.sleep(43200)  # wait
         logging.info("MQTT-HA Watch is alive")
 
