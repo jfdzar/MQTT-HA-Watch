@@ -18,7 +18,6 @@ class HADatabase:
         self.df_csv = pd.DataFrame()
         self.df_db = pd.DataFrame()
         self.email_txt = ''
-        self.csv_working_dir = ''
 
         if (path != ''):
             self.path = path
