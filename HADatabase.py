@@ -6,7 +6,7 @@ import os
 
 
 class HADatabase:
-    def __init__(self,path=''):
+    def __init__(self, path=''):
         """ Init HA Database Object"""
 
         logging.info('Creating HADatabase - Just Assigning Path')
@@ -35,11 +35,14 @@ class HADatabase:
                 self.con = sqlite3.connect(self.db_working_dir)
                 logging.info('Connecting Succeded!')
                 try:  # Then read the Database File and save it in a Pandas Dataframe
-                    logging.info('Reading Database - Saving Data into Dataframe')
-                    self.df_db = pd.read_sql_query('SELECT * FROM states;',self.con)
+                    logging.info(
+                        'Reading Database - Saving Data into Dataframe')
+                    self.df_db = pd.read_sql_query('SELECT * FROM states;',
+                                                   self.con)
                     self.con.close()
                     try:  # Then save the Dataframe into the csv to create statistics
-                        logging.info('Reading Database - Creating Backup in CSV')
+                        logging.info(
+                            'Reading Database - Creating Backup in CSV')
                         self.save_to_csv_db()
                         logging.info('Deleting DB File on working dir')
                         os.remove(self.db_working_dir)
@@ -48,22 +51,22 @@ class HADatabase:
                 except Exception as e:  # skipcq: PYL-W0703
                     logging.info('Saving Data into Dataframe failed')
                     logging.error(e)
-                    self.df_db = 0   
+                    self.df_db = 0
 
             except Exception as e:  # skipcq: PYL-W0703
                 logging.info('Connecting Failed!')
-                logging.error('%s %s',e,self.path)
-                self.con = 0 
+                logging.error('%s %s', e, self.path)
+                self.con = 0
         except Exception as e:  # skipcq: PYL-W0703
             logging.error('Error Copying DB to Working Dir')
-            logging.error('%s %s',e,self.path)
+            logging.error('%s %s', e, self.path)
 
     def copy_db_to_working_dir(self):
         """ Copy DB File to Working dir """
 
         self.db_working_dir = 'data/home-assistant.db'
         try:
-            shutil.copyfile(self.path,self.db_working_dir)
+            shutil.copyfile(self.path, self.db_working_dir)
         except Exception as e:  # skipcq: PYL-W0703
             logging.error(e)
 
@@ -88,8 +91,9 @@ class HADatabase:
     def calculate_battery_values(self):
         """ Temp function which calculates some values to be sent """
         try:
-            x = self.df_csv[(self.df_csv['entity_id'] =='sensor.battery_status_garden')]
-            x = x.replace('unknown',method='bfill')['state'].astype(float)
+            x = self.df_csv[(
+                self.df_csv['entity_id'] == 'sensor.battery_status_garden')]
+            x = x.replace('unknown', method='bfill')['state'].astype(float)
             self.battery_min = x.min()
             self.battery_mean = x.mean()
             self.battery_max = x.max()
