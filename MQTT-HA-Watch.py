@@ -129,6 +129,8 @@ if __name__ == '__main__':
 
     logging.basicConfig(
         format="%(asctime)s: %(message)s",
+        filemode='a',
+        filename='HA-Watch.log',
         level=logging.INFO,
         datefmt="%H:%M:%S")
 
