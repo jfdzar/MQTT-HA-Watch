@@ -8,6 +8,7 @@ import json
 import HAEmail
 import HADetectPerson
 import HADatabase
+import HAWeather
 
 
 def on_connect(_mqttc, _obj, _flags, rc):
@@ -57,6 +58,11 @@ def on_message(mqttc, _obj, msg):
                 alive_email_t = threading.Thread(
                     target=send_statistics, args=())
                 alive_email_t.start()
+            if msg.payload.decode('utf-8') == "Weather":
+                logging.info("Sending Weather")
+                alive_email_t = threading.Thread(
+                    target=send_weather, args=())
+                alive_email_t.start()
 
 
 def send_statistics():
@@ -70,7 +76,7 @@ def send_statistics():
         read_db_thread.join()
         logging.info("Preparing E-Mail")
 
-        alive_msg = credentials[1]["alive_msg"]
+        alive_msg = ha_db.email_txt
         alive_subject = credentials[1]["alive_subject"]
         alive_from = credentials[1]["alive_from"]
         alive_to = credentials[1]["alive_to"]
@@ -89,15 +95,51 @@ def send_statistics():
         logging.error(e)
 
 
+def send_weather():
+    """ Temp Function to send OW Statistics """
+
+    logging.info("Sending Weather")
+    try:
+        read_weather_thread = threading.Thread(
+            target=ha_weather.get_weather, args=())
+        read_weather_thread.start()
+        logging.info("Waiting for Weather to be read")
+        read_weather_thread.join()
+
+        weather_msg = ha_weather.email_txt
+        weather_subject = credentials[2]["weather_subject"]
+        weather_from = credentials[2]["weather_from"]
+        weather_to = credentials[2]["weather_to"]
+
+        alive_email_thread = threading.Thread(
+            target=HAEmail.send_email,
+            args=(
+                weather_msg,
+                weather_subject,
+                weather_from,
+                weather_to,
+            ))
+        alive_email_thread.start()
+
+    except Exception as e:  # skipcq: PYL-W0703
+        logging.error(e)
+
+
 if __name__ == '__main__':
 
     logging.basicConfig(
         format="%(asctime)s: %(message)s",
+        filemode='a',
+        filename='HA-Watch.log',
         level=logging.INFO,
         datefmt="%H:%M:%S")
 
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
+
+    # Init Weather
+    ha_weather = HAWeather.HAWeather()
+    ha_weather.get_weather()
 
     # Read Database
     path = credentials[0]["db_path"]

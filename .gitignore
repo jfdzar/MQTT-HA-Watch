@@ -3,3 +3,4 @@ include
 __pycache__
 data
 *.csv
+*.log
