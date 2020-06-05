@@ -41,7 +41,7 @@ class HAWeather:
             if rain_amount != 0:
                 msg += ('It may rain: %2.1f mm \n' % (rain_amount))
 
-        except Exception as e:
+        except Exception as e:  # skipcq: PYL-W0703
             msg = 'Error Reading Weather'
             logging.error(e)
 
