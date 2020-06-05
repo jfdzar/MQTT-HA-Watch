@@ -76,7 +76,7 @@ def send_statistics():
         read_db_thread.join()
         logging.info("Preparing E-Mail")
 
-        alive_msg = credentials[1]["alive_msg"]
+        alive_msg = ha_db.email_txt
         alive_subject = credentials[1]["alive_subject"]
         alive_from = credentials[1]["alive_from"]
         alive_to = credentials[1]["alive_to"]

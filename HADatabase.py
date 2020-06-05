@@ -82,12 +82,15 @@ class HADatabase:
     def prepare_email(self):
         """ Prepare E-Mail to be sent """
 
-        self.email_txt = 'Hola'
+        self.email_txt = 'Good Morning! Home Assistant is Alive\n'
 
         self.df_csv = pd.read_csv(self.csv_working_dir)
 
         self.calculate_battery_values()
-        self.email_txt = self.email_txt + str(self.battery_min)
+
+        self.email_txt += ('Battery Max: %2.2f  \n' % (self.battery_min))
+        self.email_txt += ('Battery Min: %2.2f  \n' % (self.battery_max))
+        self.email_txt += ('Battery Mean: %2.2f  \n' % (self.battery_mean))
 
     def calculate_battery_values(self):
         """ Temp function which calculates some values to be sent """
