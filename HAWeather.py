@@ -4,7 +4,7 @@ import json
 
 
 class HAWeather:
-    def __init__(self, path=''):
+    def __init__(self):
         """ Init HA Database Object"""
 
         logging.info('Creating HAWeather')

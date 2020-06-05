@@ -6,7 +6,7 @@ import os
 
 
 class HADatabase:
-    def __init__(self):
+    def __init__(self, path=''):
         """ Init HA Database Object"""
 
         logging.info('Creating HADatabase - Just Assigning Path')
