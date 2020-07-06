@@ -132,7 +132,7 @@ if __name__ == '__main__':
         filemode='a',
         filename='HA-Watch.log',
         level=logging.INFO,
-        datefmt="%H:%M:%S")
+        datefmt="%d-%m-%y %H:%M:%S")
 
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
