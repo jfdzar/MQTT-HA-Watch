@@ -5,6 +5,31 @@ import shutil
 import os
 
 
+def convert_to_float(x):
+    try:
+        return(float(x))
+    except Exception as e:  # skipcq: PYL-W0703
+        return(x)
+
+
+def read_db(db_filename):
+    con = sqlite3.connect(db_filename)
+    df = pd.read_sql_query("SELECT * FROM states;", con)
+    df = df.drop(['domain', 'event_id', 'context_id',
+                  'context_user_id', 'last_changed', 'last_updated'], axis=1)
+    df = df.set_index('state_id')
+
+    df = df[df['state'] != 'unknown']
+    df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+    df['float'] = df['state'].apply(lambda x: type(x) == float)
+
+    df.to_csv('home-assistant.csv')
+    df = pd.read_csv('home-assistant.csv', index_col='state_id')
+    df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+
+    return df
+
+
 class HADatabase:
     def __init__(self, path=''):
         """ Init HA Database Object"""
@@ -29,13 +54,13 @@ class HADatabase:
     def read_database(self):
         """ Read Database File in Path """
 
-        try:  # First copy the database file to the working directory
+        try:
             logging.info('Reading Database -  Copying DB to Working Dir')
             self.copy_db_to_working_dir()
-            try:  # Then connect to the file
+            try:
                 self.con = sqlite3.connect(self.db_working_dir)
-                logging.info('Connecting Succeded!')
-                try:  # Then read the Database File and save it in a Pandas Dataframe
+                logging.info('Reading Database - Connecting Succeded!')
+                try:
                     logging.info(
                         'Reading Database - Saving Data into Dataframe')
                     self.df_db = pd.read_sql_query('SELECT * FROM states;',

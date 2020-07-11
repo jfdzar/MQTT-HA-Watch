@@ -41,10 +41,10 @@ if __name__ == '__main__':
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
 
-    broker_address = credentials[0]["broker_address"]
-    port = credentials[0]["port"]
-    user = credentials[0]["user"]
-    password = credentials[0]["password"]
+    broker_address = credentials["broker_address"]
+    port = credentials["port"]
+    user = credentials["user"]
+    password = credentials["password"]
 
     mqtt_client = mqtt.Client()
     mqtt_client.username_pw_set(
