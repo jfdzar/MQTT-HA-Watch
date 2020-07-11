@@ -7,7 +7,7 @@ import os
 
 def convert_to_float(x):
     try:
-        return(float(x))
+        return float(x)
     except Exception as e:  # skipcq: PYL-W0703
         str(e)
         return x
@@ -98,7 +98,7 @@ class HADatabase:
         for x in df['entity_id'].unique():
             no_sensor_values = "False" in str(
                 df[df['entity_id'] == x]['float'].value_counts().to_dict())
-            if ("sensor." == x[:7]) and not(no_sensor_values):
+            if ("sensor." == x[:7]) and not no_sensor_values:
                 txt += 'Entity: %s \n' % x
                 df_lv = df[df['entity_id'] == x].tail(
                     self.statistics_sample)
