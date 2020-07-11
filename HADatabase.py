@@ -6,6 +6,7 @@ import os
 
 
 def convert_to_float(x):
+    """ Convert value to float """
     try:
         return float(x)
     except Exception as e:  # skipcq: PYL-W0703
