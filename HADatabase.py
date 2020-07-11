@@ -10,7 +10,7 @@ def convert_to_float(x):
         return(float(x))
     except Exception as e:  # skipcq: PYL-W0703
         str(e)
-        return(x)
+        return x
 
 
 def read_db(db_filename):
