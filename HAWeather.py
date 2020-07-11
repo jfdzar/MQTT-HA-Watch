@@ -12,7 +12,7 @@ class HAWeather:
         with open('include/credentials.json', 'r') as f:
             credentials = json.load(f)
 
-        self.api_key = credentials[3]['ow-api-key']
+        self.api_key = credentials['ow-api-key']
         self.zip_code = 80796
         self.weather = ''
         self.email_txt = ''

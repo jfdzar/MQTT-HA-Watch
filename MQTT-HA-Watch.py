@@ -77,9 +77,9 @@ def send_statistics():
         logging.info("Preparing E-Mail")
 
         alive_msg = ha_db.email_txt
-        alive_subject = credentials[1]["alive_subject"]
-        alive_from = credentials[1]["alive_from"]
-        alive_to = credentials[1]["alive_to"]
+        alive_subject = credentials["alive_subject"]
+        alive_from = credentials["alive_from"]
+        alive_to = credentials["alive_to"]
 
         alive_email_thread = threading.Thread(
             target=HAEmail.send_email,
@@ -107,9 +107,9 @@ def send_weather():
         read_weather_thread.join()
 
         weather_msg = ha_weather.email_txt
-        weather_subject = credentials[2]["weather_subject"]
-        weather_from = credentials[2]["weather_from"]
-        weather_to = credentials[2]["weather_to"]
+        weather_subject = credentials["weather_subject"]
+        weather_from = credentials["weather_from"]
+        weather_to = credentials["weather_to"]
 
         alive_email_thread = threading.Thread(
             target=HAEmail.send_email,
@@ -132,7 +132,7 @@ if __name__ == '__main__':
         filemode='a',
         filename='HA-Watch.log',
         level=logging.INFO,
-        datefmt="%H:%M:%S")
+        datefmt="%d-%m-%y %H:%M:%S")
 
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
@@ -142,16 +142,16 @@ if __name__ == '__main__':
     ha_weather.get_weather()
 
     # Read Database
-    path = credentials[0]["db_path"]
-    if os.path.isfile(path):
-        ha_db = HADatabase.HADatabase(path=path)
+    db_path = credentials["db_path"]
+    csv_path = credentials["csv_path"]
+    if os.path.isfile(db_path):
+        ha_db = HADatabase.HADatabase(path=db_path, csv_path=csv_path)
         ha_db.read_database()
-        ha_db.prepare_email()
 
-    broker_address = credentials[0]["broker_address"]
-    port = credentials[0]["port"]
-    user = credentials[0]["user"]
-    password = credentials[0]["password"]
+    broker_address = credentials["broker_address"]
+    port = credentials["port"]
+    user = credentials["user"]
+    password = credentials["password"]
 
     mqtt_client = mqtt.Client()
     mqtt_client.username_pw_set(
@@ -165,7 +165,7 @@ if __name__ == '__main__':
 
     mqtt_client.loop_start()  # start the loop
     logging.info("Subscribing to desired topics")
-    mqtt_client.subscribe(credentials[0]["all_topics"])
+    mqtt_client.subscribe(credentials["all_topics"])
 
     while 1:
         time.sleep(43200)  # wait
