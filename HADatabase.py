@@ -33,7 +33,7 @@ def read_db(db_filename):
 
     df = df[df['state'] != 'unknown']
     df['state'] = df['state'].apply(convert_to_float)
-    df['float'] = df['state'].apply(lambda x: type(x) == float)
+    df['float'] = df['state'].apply(lambda x: type(x) is float)
 
     # df.to_csv(tmp_csv)
     # df = pd.read_csv(tmp_csv, index_col='state_id')
@@ -101,7 +101,7 @@ class HADatabase:
         for x in df['entity_id'].unique():
             no_sensor_values = "False" in str(
                 df[df['entity_id'] == x]['float'].value_counts().to_dict())
-            if ("sensor." == x[:7]) and not no_sensor_values:
+            if (x[:7] == "sensor.") and not no_sensor_values:
                 txt += 'Entity: %s \n' % x
                 df_lv = df[df['entity_id'] == x].tail(
                     self.statistics_sample)
