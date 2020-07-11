@@ -64,6 +64,8 @@ class HADatabase:
         self.csv_path = csv_path
         self.df_csv = read_csv_db(self.csv_path)
 
+        self.df_db = pd.DataFrame()
+
         self.email_txt = ''
         self.statistics_sample = 700
 
