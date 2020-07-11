@@ -9,11 +9,22 @@ def convert_to_float(x):
     try:
         return(float(x))
     except Exception as e:  # skipcq: PYL-W0703
+        str(e)
         return(x)
 
 
 def read_db(db_filename):
-    con = sqlite3.connect(db_filename)
+    """ Read a database giving the path """
+
+    tmp_db = 'database_tmp_file.db'
+    # tmp_csv = 'csv_tmp_file.csv'
+
+    try:
+        shutil.copyfile(db_filename, tmp_db)
+    except Exception as e:  # skipcq: PYL-W0703
+        logging.error(e)
+
+    con = sqlite3.connect(tmp_db)
     df = pd.read_sql_query("SELECT * FROM states;", con)
     df = df.drop(['domain', 'event_id', 'context_id',
                   'context_user_id', 'last_changed', 'last_updated'], axis=1)
@@ -23,111 +34,80 @@ def read_db(db_filename):
     df['state'] = df['state'].apply(lambda x: convert_to_float(x))
     df['float'] = df['state'].apply(lambda x: type(x) == float)
 
-    df.to_csv('home-assistant.csv')
-    df = pd.read_csv('home-assistant.csv', index_col='state_id')
-    df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+    # df.to_csv(tmp_csv)
+    # df = pd.read_csv(tmp_csv, index_col='state_id')
+    # df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+
+    os.remove(tmp_db)
+
+    return df
+
+
+def read_csv_db(csv_filename):
+    """ Read a HomeAssistant CSV File """
+    try:
+        df = pd.read_csv(csv_filename, index_col='state_id')
+        df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+    except Exception as e:  # skipcq: PYL-W0703
+        df = pd.DataFrame()
+        logging.error(e)
 
     return df
 
 
 class HADatabase:
-    def __init__(self, path=''):
+    def __init__(self, path='', csv_path=''):
         """ Init HA Database Object"""
 
-        logging.info('Creating HADatabase - Just Assigning Path')
+        logging.info('Creating HADatabase Object')
+        self.path = path
+        self.csv_path = csv_path
+        self.df_csv = read_csv_db(self.csv_path)
 
-        self.con = 0
-        self.battery_min = 0
-        self.battery_mean = 0
-        self.battery_max = 0
-        self.df_csv = pd.DataFrame()
-        self.df_db = pd.DataFrame()
         self.email_txt = ''
-        self.csv_working_dir = ''
-        self.db_working_dir = ''
-
-        if path != '':
-            self.path = path
-        else:
-            self.path = ''
+        self.statistics_sample = 700
 
     def read_database(self):
         """ Read Database File in Path """
 
         try:
-            logging.info('Reading Database -  Copying DB to Working Dir')
-            self.copy_db_to_working_dir()
-            try:
-                self.con = sqlite3.connect(self.db_working_dir)
-                logging.info('Reading Database - Connecting Succeded!')
-                try:
-                    logging.info(
-                        'Reading Database - Saving Data into Dataframe')
-                    self.df_db = pd.read_sql_query('SELECT * FROM states;',
-                                                   self.con)
-                    self.con.close()
-                    try:  # Then save the Dataframe into the csv to create statistics
-                        logging.info(
-                            'Reading Database - Creating Backup in CSV')
-                        self.save_to_csv_db()
-                        logging.info('Deleting DB File on working dir')
-                        os.remove(self.db_working_dir)
-                    except Exception as e:  # skipcq: PYL-W0703
-                        logging.error(e)
-                except Exception as e:  # skipcq: PYL-W0703
-                    logging.info('Saving Data into Dataframe failed')
-                    logging.error(e)
-                    self.df_db = 0
-
-            except Exception as e:  # skipcq: PYL-W0703
-                logging.info('Connecting Failed!')
-                logging.error('%s %s', e, self.path)
-                self.con = 0
+            logging.info(
+                'Reading Database -  Reading HomeAssistan Database File')
+            self.df_db = read_db(self.path)
         except Exception as e:  # skipcq: PYL-W0703
-            logging.error('Error Copying DB to Working Dir')
-            logging.error('%s %s', e, self.path)
-
-    def copy_db_to_working_dir(self):
-        """ Copy DB File to Working dir """
-
-        self.db_working_dir = 'data/home-assistant.db'
-        try:
-            shutil.copyfile(self.path, self.db_working_dir)
-        except Exception as e:  # skipcq: PYL-W0703
+            logging.error("Error Reading Database - Reading database file")
             logging.error(e)
 
-    def save_to_csv_db(self):
-        """ Save File to CSV """
-
-        self.csv_working_dir = 'data/home-assistant.csv'
-        self.df_db.to_csv(self.csv_working_dir)
-        # TO DO read previous CSV and append new information
-        # TO DO Clean Database
-
-    def prepare_email(self):
-        """ Prepare E-Mail to be sent """
-
-        self.email_txt = 'Good Morning! Home Assistant is Alive\n'
-
-        self.df_csv = pd.read_csv(self.csv_working_dir)
-
-        self.calculate_battery_values()
-
-        self.email_txt += ('Battery Max: %2.2f  \n' % (self.battery_min))
-        self.email_txt += ('Battery Min: %2.2f  \n' % (self.battery_max))
-        self.email_txt += ('Battery Mean: %2.2f  \n' % (self.battery_mean))
-
-    def calculate_battery_values(self):
-        """ Temp function which calculates some values to be sent """
         try:
-            x = self.df_csv[(
-                self.df_csv['entity_id'] == 'sensor.battery_status_garden')]
-            x = x.replace('unknown', method='bfill')['state'].astype(float)
-            self.battery_min = x.min()
-            self.battery_mean = x.mean()
-            self.battery_max = x.max()
+            if self.df_csv.empty:
+                self.df_csv = self.df_db
+            else:
+                self.df_csv = self.df_csv.combine_first(self.df_db)
         except Exception as e:  # skipcq: PYL-W0703
+            logging.error(
+                "Error Reading Database - Error combining DataFrames")
             logging.error(e)
-            self.battery_min = 0
-            self.battery_mean = 0
-            self.battery_max = 0
+
+        self.create_statistics()
+
+    def create_statistics(self):
+
+        df = self.df_csv
+        txt = 'HomeAssistant Values Summary\n'
+
+        for x in df['entity_id'].unique():
+            no_sensor_values = "False" in str(
+                df[df['entity_id'] == x]['float'].value_counts().to_dict())
+            if ("sensor." == x[:7]) and not(no_sensor_values):
+                txt += 'Entity: %s \n' % x
+                df_lv = df[df['entity_id'] == x].tail(
+                    self.statistics_sample)
+                txt += 'First Value: %s \n' % str(
+                    df_lv['created'].to_list()[0])
+                txt += 'Last Value:%s \n ' % str(
+                    df_lv['created'].to_list()[-1])
+                txt += 'Min: %2.2f \n' % df_lv['state'].min()
+                txt += 'Mean: %2.2f \n' % df_lv['state'].mean()
+                txt += 'Max: %2.2f \n' % df_lv['state'].max()
+
+        self.email_txt = txt
