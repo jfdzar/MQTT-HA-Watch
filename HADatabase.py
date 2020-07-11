@@ -32,7 +32,7 @@ def read_db(db_filename):
     df = df.set_index('state_id')
 
     df = df[df['state'] != 'unknown']
-    df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+    df['state'] = df['state'].apply(convert_to_float)
     df['float'] = df['state'].apply(lambda x: type(x) == float)
 
     # df.to_csv(tmp_csv)
@@ -48,7 +48,7 @@ def read_csv_db(csv_filename):
     """ Read a HomeAssistant CSV File """
     try:
         df = pd.read_csv(csv_filename, index_col='state_id')
-        df['state'] = df['state'].apply(lambda x: convert_to_float(x))
+        df['state'] = df['state'].apply(convert_to_float)
     except Exception as e:  # skipcq: PYL-W0703
         df = pd.DataFrame()
         logging.error(e)
