@@ -153,9 +153,13 @@ class HADatabase:
 
                 min_v = df_today[df_today['Feed'].str.contains(
                     topic) & df_today['Value'] > 0]['Value'].min()
+                min_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
+                    topic) & df_today['Value'] > 0]['Value']).idxmin()]['Timestamp']
 
                 max_v = df_today[df_today['Feed'].str.contains(
                     topic) & df_today['Value'] > 0]['Value'].max()
+                max_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
+                    topic) & df_today['Value'] > 0]['Value']).idxmax()]['Timestamp']
 
                 mean_v = df_today[df_today['Feed'].str.contains(
                     topic) & df_today['Value'] > 0]['Value'].mean()
@@ -169,8 +173,8 @@ class HADatabase:
 
                 txt += "%s\n" % (topic)
                 txt += "Mean Value: %2.1f%s\n" % (mean_v, unit)
-                txt += "Min: %2.1f%s\n" % (min_v, unit)
-                txt += "Max: %2.1f%s\n\n" % (max_v, unit)
+                txt += "Min: %2.1f%s (%s)\n" % (min_v, unit, str(min_t))
+                txt += "Max: %2.1f%s (%s)\n\n" % (max_v, unit, str(max_t))
             except Exception as e:  # skipcq: PYL-W0703
                 logging.error("Error evaluating Stats")
                 logging.error(e)
