@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 import shutil
 import os
-from datetime import date
+from datetime import datetime
 
 
 def convert_to_float(x):
@@ -136,22 +136,26 @@ class HADatabase:
                   'living/temperature', 'living/humidity',
                   'pihumboldt/temperature', 'pitv/temperature']
 
+        now = datetime.now()
+        today_date = now.strftime("%d/%m/%Y %H:%M:%S")
+
+        df_today = df[df["Timestamp"] >= (
+            pd.to_datetime(today_date) - pd.Timedelta(hours=24))]
+
+        min_t = df_today['Timestamp'].min()
+        max_t = df_today['Timestamp'].max()
+
+        txt += "From: %s\n" % (str(min_t))
+        txt += "Until: %s\n\n" % (str(max_t))
+
         for topic in topics:
             try:
-                today_date = date.today().strftime("%m/%d/%Y")
-
-                df_today = df[df["Timestamp"] >= (
-                    pd.to_datetime(today_date) - pd.Timedelta(days=1))]
 
                 min_v = df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0].min()[3]
-                min_t = df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0].min()[4]
+                    topic) & df_today['Value'] > 0]['Value'].min()
 
                 max_v = df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0].max()[3]
-                max_t = df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0].max()[4]
+                    topic) & df_today['Value'] > 0]['Value'].max()
 
                 mean_v = df_today[df_today['Feed'].str.contains(
                     topic) & df_today['Value'] > 0]['Value'].mean()
@@ -165,8 +169,8 @@ class HADatabase:
 
                 txt += "%s\n" % (topic)
                 txt += "Mean Value: %2.1f%s\n" % (mean_v, unit)
-                txt += "Min: %2.1f%s (%s)\n" % (min_v, unit, str(min_t))
-                txt += "Max: %2.1f%s (%s)\n\n" % (max_v, unit, str(max_t))
+                txt += "Min: %2.1f%s\n" % (min_v, unit)
+                txt += "Max: %2.1f%s\n\n" % (max_v, unit)
             except Exception as e:  # skipcq: PYL-W0703
                 logging.error("Error evaluating Stats")
                 logging.error(e)
