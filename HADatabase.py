@@ -137,7 +137,7 @@ class HADatabase:
                   'pihumboldt/temperature', 'pitv/temperature']
 
         now = datetime.now()
-        today_date = now.strftime("%d/%m/%Y %H:%M:%S")
+        today_date = now.strftime("%m/%d/%Y %H:%M:%S")
 
         df_today = df[df["Timestamp"] >= (
             pd.to_datetime(today_date) - pd.Timedelta(hours=24))]
@@ -154,24 +154,24 @@ class HADatabase:
                 try:
                     min_v = df_today[df_today['Feed'].str.contains(
                         topic) & df_today['Value'] > 0]['Value'].min()
-                except:
+                except Exception as e:  # skipcq: PYL-W0703
                     min_v = 0
                 try:
                     min_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
                         topic) & df_today['Value'] > 0]['Value']).idxmin()]['Timestamp']
-                except:
+                except Exception as e:  # skipcq: PYL-W0703
                     min_t = 0
 
                 try:
                     max_v = df_today[df_today['Feed'].str.contains(
                         topic) & df_today['Value'] > 0]['Value'].max()
-                except:
+                except Exception as e:  # skipcq: PYL-W0703
                     max_v = 0
 
                 try:
                     max_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
                         topic) & df_today['Value'] > 0]['Value']).idxmax()]['Timestamp']
-                except:
+                except Exception as e:  # skipcq: PYL-W0703
                     max_t = 0
 
                 mean_v = df_today[df_today['Feed'].str.contains(
