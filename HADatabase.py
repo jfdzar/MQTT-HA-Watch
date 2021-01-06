@@ -151,15 +151,28 @@ class HADatabase:
         for topic in topics:
             try:
 
-                min_v = df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0]['Value'].min()
-                min_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0]['Value']).idxmin()]['Timestamp']
+                try:
+                    min_v = df_today[df_today['Feed'].str.contains(
+                        topic) & df_today['Value'] > 0]['Value'].min()
+                except:
+                    min_v = 0
+                try:
+                    min_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
+                        topic) & df_today['Value'] > 0]['Value']).idxmin()]['Timestamp']
+                except:
+                    min_t = 0
 
-                max_v = df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0]['Value'].max()
-                max_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
-                    topic) & df_today['Value'] > 0]['Value']).idxmax()]['Timestamp']
+                try:
+                    max_v = df_today[df_today['Feed'].str.contains(
+                        topic) & df_today['Value'] > 0]['Value'].max()
+                except:
+                    max_v = 0
+
+                try:
+                    max_t = df_today.loc[pd.to_numeric(df_today[df_today['Feed'].str.contains(
+                        topic) & df_today['Value'] > 0]['Value']).idxmax()]['Timestamp']
+                except:
+                    max_t = 0
 
                 mean_v = df_today[df_today['Feed'].str.contains(
                     topic) & df_today['Value'] > 0]['Value'].mean()
