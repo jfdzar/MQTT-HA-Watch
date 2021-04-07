@@ -142,11 +142,11 @@ if __name__ == '__main__':
     ha_weather.get_weather()
 
     # Read Database
-    db_path = credentials["db_path"]
-    csv_path = credentials["csv_path"]
-    if os.path.isfile(db_path):
-        ha_db = HADatabase.HADatabase(path=db_path, csv_path=csv_path)
-        ha_db.read_database()
+    # db_path = credentials["db_path"]
+    # csv_path = credentials["csv_path"]
+    # if os.path.isfile(db_path):
+    #     ha_db = HADatabase.HADatabase(path=db_path, csv_path=csv_path)
+    #     ha_db.read_database()
 
     broker_address = credentials["broker_address"]
     port = credentials["port"]
